@@ -107,6 +107,24 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             printTree( root );
     }
 
+    public int nodeCount()
+    {
+        int nodes = 0;
+
+        nodes = nodeCount(root);
+        return nodes;
+    }
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Internal method to insert into a subtree.
      * @param x the item to insert.
@@ -211,6 +229,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
      */
     private void printTree( BinaryNode<AnyType> t )
     {
+
         if( t != null )
         {
             printTree( t.left );
@@ -218,6 +237,28 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             printTree( t.right );
         }
     }
+
+    private int nodeCount(BinaryNode<AnyType> t )
+    {
+        if (t == null)
+            return 0;
+        int count = 0;
+
+    
+        if(t.left != null && t.right != null)
+            count++;
+
+        count += (nodeCount(t.left) + nodeCount(t.right));
+        return count;
+
+
+    }
+
+
+
+
+
+
 
     /**
      * Internal method to compute height of a subtree.
@@ -261,7 +302,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     public static void main( String [ ] args )
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<>( );
-        final int NUMS = 4000;
+        final int NUMS = 10;
         final int GAP  =   37;
 
         System.out.println( "Checking... (no more output means success)" );
@@ -286,5 +327,14 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             if( t.contains( i ) )
                 System.out.println( "Find error2!" );
         }
+
+
+        t.printTree();
+        System.out.println("Number of nodes in the tree: " + t.nodeCount());
+
+
+
+
+
     }
 }
