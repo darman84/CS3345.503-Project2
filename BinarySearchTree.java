@@ -132,11 +132,21 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         BinarySearchTree<AnyType> copiedTree = new BinarySearchTree<>();
 
         
-        copy(root, copiedTree.root);
+        copiedTree.root = copy(root);
         return copiedTree;
         
     }
-
+    public BinarySearchTree<AnyType> mirror()
+    {
+        BinarySearchTree<AnyType> mirrorTree = new BinarySearchTree<>();
+    
+        mirrorTree.root = mirror(root);
+        return mirrorTree;
+    }
+    public void rotateRight(AnyType x)
+    {
+        rotateRight(x, root);
+    }
 
 
 
@@ -312,8 +322,9 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         }
         
     }
-    private void copy(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
+    private BinaryNode<AnyType> copy(BinaryNode<AnyType> t1)
     {   // might need to set return type to void...
+        /* 
         if (t1 != null)
         {
             t2 = new BinaryNode<>(t1.element, null, null);
@@ -322,7 +333,27 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             copy(t1.left, t2.left);
             copy(t1.right,t2.right);
         }
-            
+        */
+        if(t1 == null)
+            return null;
+        BinaryNode<AnyType> newNode = new BinaryNode<>(t1.element, null, null);
+        newNode.left = copy(t1.left);
+        newNode.right = copy(t1.right);
+        return newNode;
+    }
+    private BinaryNode<AnyType> mirror(BinaryNode<AnyType> t)
+    {
+        // not sure how to do this one yet
+        if(t == null)
+            return null;
+        BinaryNode<AnyType> newNode = new BinaryNode<>(t.element, null, null);
+        newNode.left = copy(t.right);
+        newNode.right = copy(t.left);
+        return newNode;
+    }
+    private void rotateRight(AnyType x)
+    {
+        rotateRight(x, root);
     }
 
 
@@ -395,7 +426,10 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         result = t.equals(utilTree.root);
         System.out.println("Result: " + result);
         System.out.println("Copying the tree to a new tree...");
-        utilTree = t.copy();
+        //utilTree = t.copy();
+
+        System.out.println("Mirroring the tree...");
+        utilTree = t.mirror();
 
         //t.printTree();
         utilTree.printTree();
