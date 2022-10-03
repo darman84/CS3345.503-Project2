@@ -127,6 +127,15 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         
         return equals(root, t);
     }
+    public BinarySearchTree<AnyType> copy()
+    {
+        BinarySearchTree<AnyType> copiedTree = new BinarySearchTree<>();
+
+        
+        copy(root, copiedTree.root);
+        return copiedTree;
+        
+    }
 
 
 
@@ -291,22 +300,29 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         }
         else
         {
-            if(t1.element == t2.element && equals(t1.left, t2.left) && equals(t1.right, t2.right))
+            if(t1.element.compareTo(t2.element) == 0 && equals(t1.left, t2.left) && equals(t1.right, t2.right))
             {
-                //System.out.println("t1: " + t1.element + " t2: " + t2.element);
                 return true;
             }      
             else
             {
-                System.out.println("t1: " + t1.element + " t2: " + t2.element);
                 return false;
             } 
 
         }
- 
-
-
         
+    }
+    private void copy(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
+    {   // might need to set return type to void...
+        if (t1 != null)
+        {
+            t2 = new BinaryNode<>(t1.element, null, null);
+            System.out.println("t1: " + t1.element);
+            System.out.println("t2: " + t2.element);
+            copy(t1.left, t2.left);
+            copy(t1.right,t2.right);
+        }
+            
     }
 
 
@@ -357,17 +373,16 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     public static void main( String [ ] args )
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<>( );
-        BinarySearchTree<Integer> comparingTree = new BinarySearchTree<>();
-        final int MAX =400;
+        BinarySearchTree<Integer> utilTree = new BinarySearchTree<>();
+        final int MAX =50;
         boolean result;
 
 
         for( int i = 11; i < MAX; i = i+3 )
         {
             t.insert(i);
-            comparingTree.insert(i);
+            utilTree.insert(i);
         }
-            
 
 
 
@@ -377,8 +392,14 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         result = t.isFull();
         System.out.println("Result: " + result);
         System.out.println("Checking if the two trees are identical... ");
-        result = t.equals(comparingTree.root);
+        result = t.equals(utilTree.root);
         System.out.println("Result: " + result);
+        System.out.println("Copying the tree to a new tree...");
+        utilTree = t.copy();
+
+        //t.printTree();
+        utilTree.printTree();
+
 
 
 
