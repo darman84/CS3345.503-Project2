@@ -1,3 +1,5 @@
+import javax.lang.model.util.ElementScanner6;
+
 // BinarySearchTree class
 //
 // CONSTRUCTION: with no initializer
@@ -113,6 +115,17 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
         nodes = nodeCount(root);
         return nodes;
+    }
+
+    public boolean isFull()
+    {
+
+        return isFull(root);
+    }
+    public boolean equals(BinaryNode<AnyType> t)
+    {
+        
+        return equals(root, t);
     }
 
 
@@ -240,18 +253,50 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
     private int nodeCount(BinaryNode<AnyType> t )
     {
-        if (t == null)
-            return 0;
-        int count = 0;
+        int count = 1;
+                // add case for empty tree later
+        if (t.left != null)
+            count += nodeCount(t.left);
+        if (t.right != null)
+            count += nodeCount(t.right);
 
-    
-        if(t.left != null && t.right != null)
-            count++;
 
-        count += (nodeCount(t.left) + nodeCount(t.right));
         return count;
 
 
+    }
+    private boolean isFull(BinaryNode<AnyType> t)
+    {
+        if(t == null)
+            return true;
+        if(t.left == null && t.right == null)
+            return true;
+
+        if((t.left!= null) && (t.right != null))
+            return (isFull(t.left) && isFull(t.right));
+
+        return false;
+    }
+    private boolean equals(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
+    {
+
+
+        if(t1 == null && t2 == null)
+        {
+            return true;
+        }
+        else if (t1 != null && t2 != null)
+        {
+            if(t1.element == t2.element && equals(t1.left, t2.left) && equals(t1.right, t2.right))
+                return true;
+            else
+                return false;
+        }
+        else
+            return false;
+
+
+        
     }
 
 
@@ -302,35 +347,31 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     public static void main( String [ ] args )
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<>( );
-        final int NUMS = 10;
+        BinarySearchTree<Integer> comparingTree = new BinarySearchTree<>();
+        final int NUMS =400;
         final int GAP  =   37;
+        boolean result;
 
-        System.out.println( "Checking... (no more output means success)" );
 
         for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
-            t.insert( i );
-
-        for( int i = 1; i < NUMS; i+= 2 )
-            t.remove( i );
-
-        if( NUMS < 40 )
-            t.printTree( );
-        if( t.findMin( ) != 2 || t.findMax( ) != NUMS - 2 )
-            System.out.println( "FindMin or FindMax error!" );
-
-        for( int i = 2; i < NUMS; i+=2 )
-             if( !t.contains( i ) )
-                 System.out.println( "Find error1!" );
-
-        for( int i = 1; i < NUMS; i+=2 )
         {
-            if( t.contains( i ) )
-                System.out.println( "Find error2!" );
+            t.insert(i);
+            comparingTree.insert(i);
         }
+            
 
 
-        t.printTree();
+
+
+       // t.printTree();
+       // comparingTree.printTree();
         System.out.println("Number of nodes in the tree: " + t.nodeCount());
+        System.out.println("Checking if Binary tree is full...");
+        result = t.isFull();
+        System.out.println("Result: " + result);
+        System.out.println("Comparing the result of two trees... ");
+        result = t.equals(comparingTree.root);
+        System.out.println("Result: " + result);
 
 
 
