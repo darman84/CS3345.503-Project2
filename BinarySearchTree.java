@@ -280,20 +280,30 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     private boolean equals(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
     {
 
-
         if(t1 == null && t2 == null)
         {
             return true;
         }
-        else if (t1 != null && t2 != null)
+        else if(t1 != null && t2 == null || t1 == null && t2 != null)
         {
-            if(t1.element == t2.element && equals(t1.left, t2.left) && equals(t1.right, t2.right))
-                return true;
-            else
-                return false;
+
+            return false;
         }
         else
-            return false;
+        {
+            if(t1.element == t2.element && equals(t1.left, t2.left) && equals(t1.right, t2.right))
+            {
+                //System.out.println("t1: " + t1.element + " t2: " + t2.element);
+                return true;
+            }      
+            else
+            {
+                System.out.println("t1: " + t1.element + " t2: " + t2.element);
+                return false;
+            } 
+
+        }
+ 
 
 
         
@@ -348,12 +358,11 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<>( );
         BinarySearchTree<Integer> comparingTree = new BinarySearchTree<>();
-        final int NUMS =400;
-        final int GAP  =   37;
+        final int MAX =400;
         boolean result;
 
 
-        for( int i = GAP; i != 0; i = ( i + GAP ) % NUMS )
+        for( int i = 11; i < MAX; i = i+3 )
         {
             t.insert(i);
             comparingTree.insert(i);
@@ -363,13 +372,11 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
 
 
-       // t.printTree();
-       // comparingTree.printTree();
         System.out.println("Number of nodes in the tree: " + t.nodeCount());
         System.out.println("Checking if Binary tree is full...");
         result = t.isFull();
         System.out.println("Result: " + result);
-        System.out.println("Comparing the result of two trees... ");
+        System.out.println("Checking if the two trees are identical... ");
         result = t.equals(comparingTree.root);
         System.out.println("Result: " + result);
 
