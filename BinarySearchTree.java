@@ -1,3 +1,5 @@
+import java.util.NoSuchElementException;
+
 import javax.lang.model.util.ElementScanner6;
 
 // BinarySearchTree class
@@ -145,7 +147,10 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
     public void rotateRight(AnyType x)
     {
-        rotateRight(x, root);
+        if(contains(x))
+            rotateRight(x, root);
+        else
+            throw new NoSuchElementException();
     }
 
 
@@ -343,17 +348,44 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
     private BinaryNode<AnyType> mirror(BinaryNode<AnyType> t)
     {
-        // not sure how to do this one yet
+        /* PSEUDOCODE
+         * doing preorder...
+         * 
+         * 
+         * 
+         */
+        // im not really sure if this currently works or not
         if(t == null)
             return null;
         BinaryNode<AnyType> newNode = new BinaryNode<>(t.element, null, null);
-        newNode.left = copy(t.right);
-        newNode.right = copy(t.left);
+        newNode.left = mirror(t.right);
+        newNode.right = mirror(t.left);
         return newNode;
     }
-    private void rotateRight(AnyType x)
+    private BinaryNode<AnyType> rotateRight(AnyType x, BinaryNode<AnyType> t)
     {
-        rotateRight(x, root);
+        if (t == null)
+            return null;
+
+        int compareResult = x.compareTo(t.element);
+
+        if (compareResult < 0)
+            return rotateRight(x, t.left);
+        else if (compareResult > 0)
+            return rotateRight(x, t.right);
+        else
+        {
+            BinaryNode<AnyType> t2 = t.right;
+            t.right = t2.left;
+            t2.left = t;
+
+            System.out.println("Here");
+            return t2;
+
+            // match
+
+        }    
+
     }
 
 
@@ -426,13 +458,18 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         result = t.equals(utilTree.root);
         System.out.println("Result: " + result);
         System.out.println("Copying the tree to a new tree...");
-        //utilTree = t.copy();
+        utilTree = t.copy();
+        utilTree.makeEmpty();
 
         System.out.println("Mirroring the tree...");
         utilTree = t.mirror();
 
-        //t.printTree();
-        utilTree.printTree();
+        t.rotateRight(14);
+
+        t.printTree();
+        //utilTree.printTree();
+
+
 
 
 
