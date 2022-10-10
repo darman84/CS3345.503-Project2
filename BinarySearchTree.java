@@ -147,7 +147,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
     public void rotateRight(AnyType x)
     {
-        BinaryNode<AnyType> t = new BinaryNode<>(null,null,null);
+        BinaryNode<AnyType> balancer = new BinaryNode<>(null,null,null);
+        BinaryNode<AnyType> parent = new BinaryNode<>(null, null, null);
         /*
 
         if(contains(x))
@@ -157,12 +158,10 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
         */
         // maybe do new t instead of the declaration above, also add check for missing value
-        t = findNode(x, root);
-        System.out.println("DEBUG: T = " + t.element);
-        //System.out.println("DEBUG: T LEFT = " + t.left.element);
-        System.out.println("DEBUG: T RIGHT = " + t.right.element);
+        balancer = findNode(x, root);
+        parent = findParent(x, root, null);
 
-        root = rotateRight(x, t);
+        root = rotateRight(parent, balancer);
 
         
     }
@@ -392,14 +391,41 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             return t; // Match
     }
 
-    private BinaryNode<AnyType> rotateRight(AnyType x, BinaryNode<AnyType> t)
+    private BinaryNode<AnyType> findParent(AnyType x, BinaryNode<AnyType> node, BinaryNode<AnyType> parent)
     {
-        /*
-         * PSUEDOCODE
-         *  save the left child node as a new node
-         *  set the left of the n
-         * 
-         */
+        if (node == null)
+            return node;
+
+        int compareResult = x.compareTo(node.element);
+
+        if (compareResult < 0)
+            return findParent(x, node.left, node);
+        else if (compareResult > 0)
+            return findParent(x, node.right, node);
+        else
+            return parent; // Match
+    }
+
+    private BinaryNode<AnyType> rotateRight(BinaryNode<AnyType> parent, BinaryNode<AnyType> balancer)
+    {
+
+        if(balancer.left == null)
+            throw new NoSuchElementException();
+        BinaryNode<AnyType> oldLeft = balancer.left;
+        balancer.left = oldLeft.right;
+
+        if(parent == null)
+            root = oldLeft;
+        else if(parent.left == balancer)
+            parent.left = oldLeft;
+        else
+            parent.right = oldLeft;
+
+        oldLeft.right = balancer;
+
+        return root;
+        /* 
+        // doesnt work unless the node is the current root.
 
          BinaryNode<AnyType> temp, t2;
          t2 = t.left;
@@ -414,7 +440,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
          ;
 
          return t;
-
+         */
 
     }
 
@@ -471,10 +497,15 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         boolean result;
 
 
-        for( int i = 11; i < MAX; i = i+3 )
+        // change to populate with random numbers later
+        for( int i = 21; i < MAX; i = i+3 )
         {
             t.insert(i);
             utilTree.insert(i);
+        }
+        for( int i = 14; i > 0; i = i-3)
+        {
+            t.insert(i);
         }
 
 
@@ -494,8 +525,11 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         System.out.println("Mirroring the tree...");
         utilTree = t.mirror();
 
+        System.out.println("Old root: " + t.root.element);
         System.out.println("Rotating the tree...");
-        t.rotateRight(26);
+        t.rotateRight(21);
+        System.out.println("New root: " + t.root.element);
+
 
         t.printTree();
         //utilTree.printTree();
