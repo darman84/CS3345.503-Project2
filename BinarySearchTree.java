@@ -147,10 +147,24 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
     public void rotateRight(AnyType x)
     {
+        BinaryNode<AnyType> t = new BinaryNode<>(null,null,null);
+        /*
+
         if(contains(x))
             rotateRight(x, root);
         else
             throw new NoSuchElementException();
+
+        */
+        // maybe do new t instead of the declaration above, also add check for missing value
+        t = findNode(x, root);
+        System.out.println("DEBUG: T = " + t.element);
+        //System.out.println("DEBUG: T LEFT = " + t.left.element);
+        System.out.println("DEBUG: T RIGHT = " + t.right.element);
+
+        root = rotateRight(x, t);
+
+        
     }
 
 
@@ -362,7 +376,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         newNode.right = mirror(t.left);
         return newNode;
     }
-    private BinaryNode<AnyType> rotateRight(AnyType x, BinaryNode<AnyType> t)
+
+    private BinaryNode<AnyType> findNode(AnyType x, BinaryNode<AnyType> t )
     {
         if (t == null)
             return null;
@@ -370,21 +385,36 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         int compareResult = x.compareTo(t.element);
 
         if (compareResult < 0)
-            return rotateRight(x, t.left);
+            return findNode(x, t.left);
         else if (compareResult > 0)
-            return rotateRight(x, t.right);
+            return findNode(x, t.right);
         else
-        {
-            BinaryNode<AnyType> t2 = t.right;
-            t.right = t2.left;
-            t2.left = t;
+            return t; // Match
+    }
 
-            System.out.println("Here");
+    private BinaryNode<AnyType> rotateRight(AnyType x, BinaryNode<AnyType> t)
+    {
+        /*
+         * PSUEDOCODE
+         *  save the left child node as a new node
+         *  set the left of the n
+         * 
+         */
+
+         BinaryNode<AnyType> temp, t2;
+         t2 = t.left;
+         if(t2 != null)
+         {
+            temp = t2.right;
+            t.left = temp;
+            t2.right = t;
             return t2;
+         }
+         else
+         ;
 
-            // match
+         return t;
 
-        }    
 
     }
 
@@ -464,7 +494,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         System.out.println("Mirroring the tree...");
         utilTree = t.mirror();
 
-        t.rotateRight(14);
+        System.out.println("Rotating the tree...");
+        t.rotateRight(26);
 
         t.printTree();
         //utilTree.printTree();
