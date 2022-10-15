@@ -166,6 +166,14 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         
     }
 
+    public void printLevels()
+    {
+        if (isEmpty())
+            System.out.println("Empty tree");
+        else
+            printLevels(root);
+    }
+
 
 
 
@@ -407,7 +415,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     }
 
     private BinaryNode<AnyType> rotateRight(BinaryNode<AnyType> parent, BinaryNode<AnyType> balancer)
-    {
+    {   // this func seems to work properly
 
         if(balancer.left == null)
             throw new NoSuchElementException();
@@ -424,27 +432,61 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         oldLeft.right = balancer;
 
         return root;
-        /* 
-        // doesnt work unless the node is the current root.
 
-         BinaryNode<AnyType> temp, t2;
-         t2 = t.left;
-         if(t2 != null)
-         {
-            temp = t2.right;
-            t.left = temp;
-            t2.right = t;
-            return t2;
-         }
-         else
-         ;
 
-         return t;
-         */
+    }
+    private BinaryNode<AnyType> rotateLeft(BinaryNode<AnyType> parent, BinaryNode<AnyType> balancer) 
+    { 
+        if (balancer.right == null)
+            throw new NoSuchElementException();
+        BinaryNode<AnyType> oldLeft = balancer.left;
+        balancer.left = oldLeft.right;
+
+        if (parent == null)
+            root = oldLeft;
+        else if (parent.left == balancer)
+            parent.left = oldLeft;
+        else
+            parent.right = oldLeft;
+
+        oldLeft.right = balancer;
+
+        return root;
 
     }
 
+    private void printLevels(BinaryNode<AnyType> t) 
+    {
+        int height = height(t);
 
+        for(int i = 0; i<= height; i++)
+        {
+            printThisLevel(t,i);
+            System.out.println();
+        }
+
+
+
+    }
+    private void printThisLevel(BinaryNode<AnyType> t, int level)
+    {
+        if(t == null)
+        {
+            return;
+        }
+        else if(level == 0)
+        {
+            System.out.print(t.element + " ");
+            return;
+        }
+        else
+        {
+            printThisLevel(t.left, level - 1);
+            printThisLevel(t.right, level - 1);
+        }
+ 
+
+    }
 
 
 
@@ -525,14 +567,19 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         System.out.println("Mirroring the tree...");
         utilTree = t.mirror();
 
+        System.out.println("Printing by level...");
+        t.printLevels();
+
         System.out.println("Old root: " + t.root.element);
         System.out.println("Rotating the tree...");
-        t.rotateRight(21);
+        t.rotateRight(14);
         System.out.println("New root: " + t.root.element);
 
 
-        t.printTree();
+        //t.printTree();
         //utilTree.printTree();
+        System.out.println("Printing by level...");
+        t.printLevels();
 
 
 
