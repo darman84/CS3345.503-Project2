@@ -114,15 +114,30 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     public int nodeCount()
     {
         int nodes = 0;
+        if(root == null)
+            return nodes;
+        else
+        {
+            nodes = nodeCount(root);
+            return nodes;
+        }
 
-        nodes = nodeCount(root);
-        return nodes;
     }
 
     public boolean isFull()
     {
+        if(isEmpty())
+        {
+            System.out.println("Empty tree");
+            return false;
+        }
+        else
+            return isFull(root);
+    }
 
-        return isFull(root);
+    public boolean compareStructure(BinaryNode<AnyType> t)
+    {
+        return compareStructure(root, t);
     }
     public boolean equals(BinaryNode<AnyType> t)
     {
@@ -149,14 +164,7 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     {
         BinaryNode<AnyType> balancer = new BinaryNode<>(null,null,null);
         BinaryNode<AnyType> parent = new BinaryNode<>(null, null, null);
-        /*
 
-        if(contains(x))
-            rotateRight(x, root);
-        else
-            throw new NoSuchElementException();
-
-        */
         // maybe do new t instead of the declaration above, also add check for missing value
         balancer = findNode(x, root);
         parent = findParent(x, root, null);
@@ -164,6 +172,20 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         root = rotateRight(parent, balancer);
 
         
+    }
+    
+    public void rotateLeft(AnyType x)
+    {
+        BinaryNode<AnyType> balancer = new BinaryNode<>(null, null, null);
+        BinaryNode<AnyType> parent = new BinaryNode<>(null, null, null);
+
+        // maybe do new t instead of the declaration above, also add check for missing
+        // value
+        balancer = findNode(x, root);
+        parent = findParent(x, root, null);
+
+        root = rotateLeft(parent, balancer);
+
     }
 
     public void printLevels()
@@ -298,74 +320,63 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
     private int nodeCount(BinaryNode<AnyType> t )
     {
+
         int count = 1;
-                // add case for empty tree later
         if (t.left != null)
             count += nodeCount(t.left);
         if (t.right != null)
             count += nodeCount(t.right);
 
-
         return count;
-
-
     }
     private boolean isFull(BinaryNode<AnyType> t)
     {
         if(t == null)
             return true;
-        if(t.left == null && t.right == null)
+        else if(t.left == null && t.right == null)
             return true;
-
-        if((t.left!= null) && (t.right != null))
+        else if((t.left!= null) && (t.right != null))
             return (isFull(t.left) && isFull(t.right));
+        else
+            return false;
 
-        return false;
+    }
+    
+    private boolean compareStructure(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
+    {
+        if (t1 == null && t2 == null)   // empty
+            return true;
+        else if (t1 != null && t2 != null) // not empty
+            return (compareStructure(t1.left, t2.left) && compareStructure(t1.right,t2.right));
+        else
+            return false;   // one is empty and the other is not
+
     }
     private boolean equals(BinaryNode<AnyType> t1, BinaryNode<AnyType> t2)
     {
-
         if(t1 == null && t2 == null)
-        {
             return true;
-        }
         else if(t1 != null && t2 == null || t1 == null && t2 != null)
-        {
-
             return false;
-        }
         else
         {
             if(t1.element.compareTo(t2.element) == 0 && equals(t1.left, t2.left) && equals(t1.right, t2.right))
-            {
-                return true;
-            }      
+                return true;   
             else
-            {
                 return false;
-            } 
-
         }
-        
     }
-    private BinaryNode<AnyType> copy(BinaryNode<AnyType> t1)
-    {   // might need to set return type to void...
-        /* 
-        if (t1 != null)
-        {
-            t2 = new BinaryNode<>(t1.element, null, null);
-            System.out.println("t1: " + t1.element);
-            System.out.println("t2: " + t2.element);
-            copy(t1.left, t2.left);
-            copy(t1.right,t2.right);
-        }
-        */
-        if(t1 == null)
+    private BinaryNode<AnyType> copy(BinaryNode<AnyType> t)
+    {   // postorder used so that the last return is the root of the tree
+        if(t == null)
             return null;
-        BinaryNode<AnyType> newNode = new BinaryNode<>(t1.element, null, null);
-        newNode.left = copy(t1.left);
-        newNode.right = copy(t1.right);
-        return newNode;
+        else
+        {
+            BinaryNode<AnyType> newNode = new BinaryNode<>(t.element, null, null);
+            newNode.left = copy(t.left);
+            newNode.right = copy(t.right);
+            return newNode;
+        }
     }
     private BinaryNode<AnyType> mirror(BinaryNode<AnyType> t)
     {
@@ -439,17 +450,17 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     { 
         if (balancer.right == null)
             throw new NoSuchElementException();
-        BinaryNode<AnyType> oldLeft = balancer.left;
-        balancer.left = oldLeft.right;
+        BinaryNode<AnyType> oldRight = balancer.right;
+        balancer.right = oldRight.right;
 
         if (parent == null)
-            root = oldLeft;
+            root = oldRight;
         else if (parent.left == balancer)
-            parent.left = oldLeft;
+            parent.left = oldRight;
         else
-            parent.right = oldLeft;
+            parent.right = oldRight;
 
-        oldLeft.right = balancer;
+        oldRight.left = balancer;
 
         return root;
 
@@ -484,8 +495,6 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
             printThisLevel(t.left, level - 1);
             printThisLevel(t.right, level - 1);
         }
- 
-
     }
 
 
@@ -535,34 +544,46 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
     {
         BinarySearchTree<Integer> t = new BinarySearchTree<>( );
         BinarySearchTree<Integer> utilTree = new BinarySearchTree<>();
-        final int MAX =50;
         boolean result;
+        final int NUMS = 100;
+        final int GAP = 37;
 
 
-        // change to populate with random numbers later
-        for( int i = 21; i < MAX; i = i+3 )
-        {
+
+        System.out.println("Checking... (no more output means success)");
+/* 
+        for (int i = GAP; i != 0; i = (i + GAP) % NUMS)
             t.insert(i);
-            utilTree.insert(i);
-        }
-        for( int i = 14; i > 0; i = i-3)
-        {
-            t.insert(i);
-        }
 
+        for (int i = 1; i < NUMS; i += 2)
+            t.remove(i);
 
+*/
+        t.insert(10);
+        t.insert(6);
+        t.insert(12);
 
+        utilTree.insert(10);
+        utilTree.insert(6);
+        utilTree.insert(13);
 
         System.out.println("Number of nodes in the tree: " + t.nodeCount());
+
         System.out.println("Checking if Binary tree is full...");
         result = t.isFull();
         System.out.println("Result: " + result);
+
+        System.out.println("Checking if the two trees are of similar structure... ");
+        result = t.compareStructure(utilTree.root);
+        System.out.println("Result: " + result);
+
         System.out.println("Checking if the two trees are identical... ");
         result = t.equals(utilTree.root);
         System.out.println("Result: " + result);
+
+        utilTree.makeEmpty();
         System.out.println("Copying the tree to a new tree...");
         utilTree = t.copy();
-        utilTree.makeEmpty();
 
         System.out.println("Mirroring the tree...");
         utilTree = t.mirror();
@@ -570,10 +591,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         System.out.println("Printing by level...");
         t.printLevels();
 
-        System.out.println("Old root: " + t.root.element);
         System.out.println("Rotating the tree...");
-        t.rotateRight(14);
-        System.out.println("New root: " + t.root.element);
+        t.rotateLeft(22);
 
 
         //t.printTree();
@@ -585,6 +604,8 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
 
 
 
+
+        System.out.println("Program Complete--------------------------------");
 
 
 
