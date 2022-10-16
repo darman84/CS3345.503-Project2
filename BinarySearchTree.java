@@ -630,8 +630,9 @@ public class BinarySearchTree<AnyType extends Comparable<? super AnyType>>
         System.out.println("Rotating 30 to the right...");
         t.rotateRight(30);
 
-        System.out.println("Printing by level...");
+        System.out.println("Printing utilTree by level...");
         utilTree.printLevels();
+        System.out.println("Printing the original tree by level...");
         t.printLevels();
 
         System.out.println("Program Complete--------------------------------");
