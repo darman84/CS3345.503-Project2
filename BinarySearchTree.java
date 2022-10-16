@@ -1,6 +1,8 @@
 /*
  * Zachary Williams
  * Completed on 10/15/2022
+ * Note that it is necessary for UnderflowException.java to be in the same folder as
+ * this file for compilation to succeed
  */
 
 
